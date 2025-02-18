@@ -1,0 +1,151 @@
+const UserModel = require("../models/userModel");
+const PostModel = require("../models/postModel");
+
+const getAllPostsFromCurrentUser = async (req, res) => {
+  const userId = req.user._id;
+  try {
+    const posts = await UserModel.findOne({ _id: userId }).populate(
+      "usersPosts"
+    );
+    res.status(200).json({ posts: posts.usersPosts });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+const createPost = async (req, res) => {
+  const postedBy = req.user._id;
+
+  if (!postedBy) {
+    return res.status(401).json({ error: "User must be logged in to post" });
+  }
+
+  const { title, body } = req.body;
+
+  let emptyFields = [];
+
+  if (!title) emptyFields.push("title");
+  if (!body) emptyFields.push("body");
+
+  if (emptyFields.length > 0) {
+    return res
+      .status(400)
+      .json({ error: `All fields must be filled ${emptyFields}` });
+  }
+
+  try {
+    const currentUser = await UserModel.findOne({ _id: postedBy });
+
+    if (!currentUser) {
+      throw Error("User does not exist");
+    }
+
+    const post = await PostModel.create({ title, body, postedBy });
+
+    await UserModel.findByIdAndUpdate(
+      postedBy,
+      { $push: { usersPosts: post._id } },
+      { new: true, useFindAndModify: false }
+    );
+
+    res.status(200).json({ message: "Post created successfully", post });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+const deletePost = async (req, res) => {
+  const currentUserId = req.user._id;
+  const postId = req.params.id;
+
+  try {
+    const postToDelete = await PostModel.findOne({ _id: postId });
+
+    if (!postToDelete) {
+      return res.status(404).json({ error: "No such post exists" });
+    }
+
+    if (postToDelete.postedBy.toString() !== currentUserId.toString()) {
+      return res
+        .status(403)
+        .json({ error: "You can only delete your own posts!" });
+    }
+
+    await PostModel.deleteOne({ _id: postId });
+
+    await UserModel.findByIdAndUpdate(
+      currentUserId,
+      { $pull: { usersPosts: postId } },
+      { new: true, useFindAndModify: false }
+    );
+
+    res.status(200).json({ message: "Post deleted successfully" });
+    await PostModel.deleteOne({ _id: postId._id });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+const likePost = async (req, res) => {
+  const postId = req.params.id;
+
+  const userId = req.user._id;
+
+  try {
+    const postToLike = await PostModel.findOne({ _id: postId });
+
+    if (!postToLike) {
+      throw Error("This post does not exist");
+    }
+
+    if (!postToLike.likes.includes(userId)) {
+      await PostModel.findByIdAndUpdate(
+        postId,
+        { $push: { likes: userId } },
+        { new: true, useFindAndModify: false }
+      );
+    } else {
+      return res.status(400).json({ message: "You already liked this post" });
+    }
+    res.status(200).json({ message: "Post successfully liked" });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+const dislikePost = async (req, res) => {
+  const postId = req.params.id;
+
+  const userId = req.user._id;
+
+  try {
+    const postToLike = await PostModel.findOne({ _id: postId });
+
+    if (!postToLike) {
+      throw Error("This post does not exist");
+    }
+
+    if (postToLike.likes.includes(userId)) {
+      await PostModel.findByIdAndUpdate(
+        postId,
+        { $pull: { likes: userId } },
+        { new: true, useFindAndModify: false }
+      );
+    } else {
+      return res
+        .status(400)
+        .json({ message: "You already disliked this post" });
+    }
+    res.status(200).json({ message: "Post successfully disliked" });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+module.exports = {
+  getAllPostsFromCurrentUser,
+  createPost,
+  deletePost,
+  likePost,
+  dislikePost,
+};
