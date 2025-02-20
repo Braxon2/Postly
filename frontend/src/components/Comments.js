@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 
-const Comments = ({ post_id }) => {
+const Comments = ({ post_id, postOwnerId }) => {
   const { user } = useAuth();
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -63,6 +63,24 @@ const Comments = ({ post_id }) => {
     }
   };
 
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const res = await fetch(
+        `http://localhost:4000/api/comment/delete/${commentId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to delete comment");
+
+      setComments(comments.filter((comment) => comment._id !== commentId));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="comments-section">
       <h3>Comments ({comments.length})</h3>
@@ -80,6 +98,12 @@ const Comments = ({ post_id }) => {
             </strong>{" "}
             {comment.body}
           </p>
+
+          {user._id === postOwnerId && (
+            <button onClick={() => handleDeleteComment(comment._id)}>
+              Delete
+            </button>
+          )}
         </div>
       ))}
 

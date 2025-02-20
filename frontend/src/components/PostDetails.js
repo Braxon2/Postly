@@ -38,7 +38,7 @@ const PostDetails = () => {
       <h1>{post.title}</h1>
       <p>{post.body}</p>
       <p>Likes: {post.likes?.length}</p>
-      <Comments post_id={post._id} />
+      <Comments post_id={post._id} postOwnerId={post.postedBy} />
     </div>
   );
 };
