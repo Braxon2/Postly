@@ -1,11 +1,66 @@
+import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { usePostContext } from "../hooks/usePostContext";
 
 const Postlist = ({ posts }) => {
   const { user } = useAuth();
-  console.log(user._id);
 
-  const handleClick = (e) => {
+  const { dispatch } = usePostContext();
+
+  const [error, SetError] = useState("");
+
+  const handleClick = (e, post) => {
     e.preventDefault();
+
+    const fetchPost = async () => {
+      const isLiked = post.likes.includes(user._id);
+      const endpoint = isLiked
+        ? `http://localhost:4000/api/post/dislike/${post._id}`
+        : `http://localhost:4000/api/post/like/${post._id}`;
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      const json = await res.json();
+
+      if (res.ok) {
+        dispatch({
+          type: "UPDATE_MY_POSTS",
+          payload: {
+            ...post,
+            likes: isLiked
+              ? post.likes.filter((id) => id !== user._id)
+              : [...post.likes, user._id],
+          },
+        });
+      }
+    };
+    if (user) {
+      fetchPost();
+    }
+  };
+
+  const handleDelete = async (e, post) => {
+    e.preventDefault();
+
+    const res = await fetch(`http://localhost:4000/api/post/${post._id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
+
+    const json = await res.json();
+
+    if (res.ok) {
+      dispatch({
+        type: "DELETE_POST",
+        payload: json,
+      });
+    }
   };
 
   return (
@@ -15,10 +70,14 @@ const Postlist = ({ posts }) => {
           <div className="post-element" key={post._id}>
             <h3>{post.title}</h3>
             <p>{post.body}</p>
-            <p>Likes: {post.likes.length}</p>
-            <button onClick={handleClick}>
-              {post.likes.includes(user._id) ? "Dislike" : "Like"}
+            <p>Likes: {post.likes?.length}</p>
+            <button onClick={(e) => handleClick(e, post)}>
+              {post.likes?.includes(user._id) ? "dislike" : "like"}
             </button>
+            {user._id === post.postedBy && (
+              <button onClick={(e) => handleDelete(e, post)}>Delete</button>
+            )}
+            {error && <div>{error}</div>}
           </div>
         ))}
     </div>

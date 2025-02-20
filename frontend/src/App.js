@@ -7,6 +7,7 @@ import BlogForm from "./components/CreatePostForm";
 import UserProfile from "./components/UserProfile";
 import { useAuth } from "./hooks/useAuth";
 import NotFoundPage from "./components/NotFoundPage";
+import UserCard from "./components/UserCard";
 
 function App() {
   const { user } = useAuth();
@@ -39,6 +40,11 @@ function App() {
                 element={user ? <UserProfile /> : <Navigate to="/login" />}
               />
             )}
+            <Route
+              path="/user/:username"
+              element={user ? <UserCard /> : <Navigate to="/login" />}
+            />
+
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>

@@ -16,6 +16,12 @@ export const postReducer = (state, action) => {
       return {
         posts: state.posts.filter((w) => action.payload._id !== w._id),
       };
+    case "UPDATE_MY_POSTS":
+      return {
+        posts: state.posts.map((post) =>
+          post._id === action.payload._id ? action.payload : post
+        ),
+      };
     default:
       return state;
   }

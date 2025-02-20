@@ -18,8 +18,6 @@ const UserProfile = () => {
 
       const json = await res.json();
 
-      console.log(json);
-
       if (res.ok) {
         dispatch({ type: "SET_MY_POSTS", payload: json });
       }
@@ -32,6 +30,9 @@ const UserProfile = () => {
 
   return (
     <div className="blog-list">
+      <h2>Profile details:</h2>
+      <p>{user.name}</p>
+      <p>{user.username}</p>
       <h2>My Posts</h2>
       <Postlist posts={posts} />
     </div>

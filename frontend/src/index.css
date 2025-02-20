@@ -19,7 +19,7 @@ header {
 }
 
 .searchbar {
-  width: 100%;
+  width: 60%;
   flex: 1;
   margin: 0 10px;
 }
@@ -28,9 +28,17 @@ header {
   display: flex;
   align-items: center;
   max-width: 100%;
-  width: 900px;
+  width: 1200px;
   margin: 0 auto;
   background-color: var(--secondary);
+}
+
+.div-search {
+  margin: 0 10px;
+}
+
+.div-search button {
+  font-size: 0.7rem;
 }
 
 .space-between {

@@ -5,6 +5,25 @@ const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET_KEY, { expiresIn: "3d" });
 };
 
+const getUser = async (req, res) => {
+  const usernameFromURL = req.params.username;
+
+  try {
+    const user = await UserModel.findOne({ username: usernameFromURL });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ error: `There is no user with ${usernameFromURL} username` });
+    }
+
+    const { username, name, email, followings, followers, createdAt } = user;
+    res
+      .status(200)
+      .json({ username, name, email, followings, followers, createdAt });
+  } catch (err) {
+    res.status(500).json({ error: "Something went wrong with the server..." });
+  }
+};
 const getFollowers = async (req, res) => {
   const currentUser = await UserModel.findOne({ _id: req.user._id }).populate(
     "followers"
@@ -139,10 +158,17 @@ const login = async (req, res) => {
   try {
     const user = await UserModel.login(username, password);
     const token = createToken(user._id);
-    res.status(200).json({ username, name: user.name, token });
+    res.status(200).json({ username, name: user.name, _id: user._id, token });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
-module.exports = { getFollowers, signup, login, followUser, unfollowUser };
+module.exports = {
+  getFollowers,
+  signup,
+  login,
+  followUser,
+  unfollowUser,
+  getUser,
+};
