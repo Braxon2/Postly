@@ -7,7 +7,29 @@ const getAllPostsFromCurrentUser = async (req, res) => {
     const posts = await UserModel.findOne({ _id: userId }).populate(
       "usersPosts"
     );
-    res.status(200).json({ posts: posts.usersPosts });
+    res.status(200).json(posts.usersPosts);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+const getAllPostsFromFollowings = async (req, res) => {
+  const userId = req.user._id;
+  try {
+    const user = await UserModel.findOne({ _id: userId }).populate(
+      "followings"
+    );
+    const followings = user.followings;
+    let postsFromFollowings = [];
+    for (const following of followings) {
+      const followingWithPosts = await UserModel.findOne({
+        _id: following._id,
+      }).populate("usersPosts");
+      postsFromFollowings = postsFromFollowings.concat(
+        followingWithPosts.usersPosts
+      );
+    }
+    res.status(200).json(postsFromFollowings);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
@@ -148,4 +170,5 @@ module.exports = {
   deletePost,
   likePost,
   dislikePost,
+  getAllPostsFromFollowings,
 };

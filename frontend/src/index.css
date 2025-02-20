@@ -1,13 +1,79 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* google font */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800&family=VT323&display=swap");
+
+:root {
+  --primary: #d81159;
+  --font: #d8115aee;
+  --secondary: #83c5be;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  font-family: Poppins;
+  background-color: var(--secondary);
+}
+header {
+  border-bottom: 1px solid black;
+  background-color: var(--secondary);
+  width: 100%;
+  padding: 10px 0;
+}
+
+.searchbar {
+  width: 100%;
+  flex: 1;
+  margin: 0 10px;
+}
+
+.nav-wrapper {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  width: 900px;
+  margin: 0 auto;
+  background-color: var(--secondary);
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.nav-wrapper a {
+  text-decoration: none;
+}
+
+nav div {
+  display: inline-block;
+}
+
+header h2 {
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+ul a li {
+  display: inline-block;
+  padding: 0 10px;
+  color: var(--primary);
+  font-weight: bolder;
+}
+
+.pages {
+  max-width: 100%;
+  width: 900px;
+  margin: 0 auto;
+}
+
+/*Create post form*/
+
+label {
+  display: block;
+}
+
+.create input {
+  width: 100%;
+}
+
+.create textarea {
+  width: 100%;
+  height: 150px;
 }

@@ -109,6 +109,7 @@ const signup = async (req, res) => {
       .status(400)
       .json({ error: `All fields must be filled ${emptyFields}` });
   }
+  console.log(email, username, name, password);
 
   try {
     const user = await UserModel.signup(email, username, name, password);
