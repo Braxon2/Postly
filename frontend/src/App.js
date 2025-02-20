@@ -8,6 +8,7 @@ import UserProfile from "./components/UserProfile";
 import { useAuth } from "./hooks/useAuth";
 import NotFoundPage from "./components/NotFoundPage";
 import UserCard from "./components/UserCard";
+import PostDetails from "./components/PostDetails";
 
 function App() {
   const { user } = useAuth();
@@ -34,6 +35,7 @@ function App() {
               path="/create"
               element={user ? <BlogForm /> : <Navigate to="/login" />}
             />
+
             {user && (
               <Route
                 path={`/${user.username}`}
@@ -43,6 +45,10 @@ function App() {
             <Route
               path="/user/:username"
               element={user ? <UserCard /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/post/:id"
+              element={user ? <PostDetails /> : <Navigate to="/login" />}
             />
 
             <Route path="*" element={<NotFoundPage />} />

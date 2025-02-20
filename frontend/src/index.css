@@ -28,7 +28,7 @@ header {
   display: flex;
   align-items: center;
   max-width: 100%;
-  width: 1200px;
+  width: 900px;
   margin: 0 auto;
   background-color: var(--secondary);
 }
@@ -84,4 +84,9 @@ label {
 .create textarea {
   width: 100%;
   height: 150px;
+}
+
+.post-element a {
+  text-decoration: none;
+  color: black;
 }

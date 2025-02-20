@@ -1,5 +1,6 @@
 const UserModel = require("../models/userModel");
 const PostModel = require("../models/postModel");
+const CommentModel = require("../models/commentModel");
 
 const getAllPostsFromCurrentUser = async (req, res) => {
   const userId = req.user._id;
@@ -164,6 +165,41 @@ const dislikePost = async (req, res) => {
   }
 };
 
+const getCommentsFromPost = async (req, res) => {
+  try {
+    const postId = req.params.post_id;
+
+    const comments = await CommentModel.find({ onPost: postId })
+      .populate("commentBy", "name username")
+      .sort({ createdAt: -1 });
+
+    if (!comments) {
+      return res.status(404).json({ message: "Comments not found" });
+    }
+    console.log(comments);
+
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+const getPost = async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    const post = await PostModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ message: "post not found" });
+    }
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 module.exports = {
   getAllPostsFromCurrentUser,
   createPost,
@@ -171,4 +207,6 @@ module.exports = {
   likePost,
   dislikePost,
   getAllPostsFromFollowings,
+  getCommentsFromPost,
+  getPost,
 };

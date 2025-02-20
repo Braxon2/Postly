@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { usePostContext } from "../hooks/usePostContext";
+import { Link } from "react-router-dom";
 
 const Postlist = ({ posts }) => {
   const { user } = useAuth();
@@ -68,9 +69,11 @@ const Postlist = ({ posts }) => {
       {posts &&
         posts.map((post) => (
           <div className="post-element" key={post._id}>
-            <h3>{post.title}</h3>
-            <p>{post.body}</p>
-            <p>Likes: {post.likes?.length}</p>
+            <Link to={`/post/${post._id}`}>
+              <h3>{post.title}</h3>
+              <p>{post.body}</p>
+              <p>Likes: {post.likes?.length}</p>
+            </Link>
             <button onClick={(e) => handleClick(e, post)}>
               {post.likes?.includes(user._id) ? "dislike" : "like"}
             </button>
