@@ -58,14 +58,15 @@ npm install
 
 Set up environment variables:
 Create a .env file in the backend directory and add the following variables:
-env
-Copy
+
 PORT=4000
+
 MONGO_URI=uri_to_connect_to_your_databe
+
 JWT_SECRET=your_jwt_secret
+
 Start the development servers:
-bash
-Copy
+
 # Backend
 cd backend
 npm run dev
