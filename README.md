@@ -28,7 +28,9 @@ Responsive design for various devices
 
 # Technologies Used
 Frontend: ![React](https://img.shields.io/badge/React-18.2.0-blue)
+
 Backend: ![Node.js](https://img.shields.io/badge/Node.js-16.14.0-green) with ![Express.js](https://img.shields.io/badge/Express.js-4.18.2-lightgrey)
+
 Database: ![MongoDB](https://img.shields.io/badge/MongoDB-8.0.4-green)
 
 # Getting Started
