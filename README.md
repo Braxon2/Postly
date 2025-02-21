@@ -3,10 +3,15 @@ A social media platform built with the MERN stack (MongoDB, Express.js, React.js
 
 # Table of Contents
 Introduction
+
 Features
+
 Technologies Used
+
 Getting Started
+
 Installation
+
 Usage
 
 
